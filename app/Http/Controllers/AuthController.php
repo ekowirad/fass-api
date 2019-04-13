@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+
+use App\User;
+use Auth;
 
 class AuthController extends Controller
 {
@@ -27,6 +29,23 @@ class AuthController extends Controller
         // } 
 
         // return response()->json(['status' => 'login_error'], 401);
+        
+        // cek apakah ada user dengan email dan password yang di input
+        if(!Auth::attempt([
+            // email bisa ganti dengan username, sesuaikan dengan keperluan
+            'email'     => $request->email,
+            "password"  => $request->password,
+        ])) {
+            return response()->json([
+                "error" => "unauthorized"
+            ], 401);
+        }
+
+        // kalau user ada, cari data usernya
+        $user = User::find(Auth::user()->id);
+        return response()->json([
+            "data"  => $user
+        ], 200);
     }
 
     public function username()
