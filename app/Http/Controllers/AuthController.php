@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 use App\User;
@@ -43,6 +44,8 @@ class AuthController extends Controller
 
         // kalau user ada, cari data usernya
         $user = User::find(Auth::user()->id);
+        $user->api_token = Str::random(60);
+        $user->save();
         return response()->json([
             "data"  => $user
         ], 200);
