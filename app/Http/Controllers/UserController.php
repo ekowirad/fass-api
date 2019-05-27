@@ -65,6 +65,7 @@ class UserController extends Controller
 
     public function index()
     {
+        // search for list of user where id doesn't equals to user login
         $user = User::where('id', '!=', auth()->id())->orderBy('created_at', 'desc')->paginate(5);
         return UserResource::collection($user);
     }
