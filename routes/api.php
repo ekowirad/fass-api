@@ -14,10 +14,16 @@ use Illuminate\Http\Request;
 */
 Route::post('login', 'LoginController@login');
 Route::post('logout', 'LoginController@logout');
+
+// Testing route
 Route::post('labor', 'LaborController@store');
+Route::post('search', 'LaborController@search');
 Route::put('labor', 'LaborController@store');
 Route::get('labors', 'LaborController@index');
 Route::post('carrier', 'LaborController@storeCarrier');
+Route::post('image', 'LaborController@storeImage');
+Route::delete('image', 'LaborController@destroyImage');
+
 
 
 Route::group(['middleware' => 'auth:api'], function () {

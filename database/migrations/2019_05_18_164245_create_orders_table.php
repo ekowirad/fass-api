@@ -13,7 +13,7 @@ class CreateOrdersTable extends Migration
      */
     public function up()
     {
-        Schema::create('orders', function (Blueprint $table) {
+        Schema::create('orders', function (Blueprint $table){
             //order columns
             $table->bigIncrements('id');
             $table->string('name');
@@ -21,11 +21,14 @@ class CreateOrdersTable extends Migration
             $table->string('address');
             $table->bigInteger('labor_id')->unsigned()->nullable();
             $table->foreign('labor_id')->references('id')->on('labors');
-            $table->char('order_type', 3);
+            $table->char('time_type', 3);
             $table->string('day_start');
             $table->string('day_end');
             $table->string('hour_day');
             $table->string('hour_start');
+            // labor requirement if theres no labor available
+            $table->bigInteger('labor_order_id')->unsigned();
+            $table->foreign('labor_order_id')->references('id')->on('order_labors');
 
             // sales columns
             $table->bigInteger('id_revenue')->unsigned();

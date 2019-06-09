@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRevenuesTable extends Migration
+class CreateLaborFilesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,12 @@ class CreateRevenuesTable extends Migration
      */
     public function up()
     {
-        Schema::create('revenues', function (Blueprint $table) {
+        Schema::create('labor_files', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigIncrements('user_id')->unsigned();
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->string('type');
+            $table->string('name');
+            $table->bigInteger('labor_id')->unsigned();
+            $table->foreign('labor_id')->references('id')->on('labors');
             $table->timestamps();
         });
     }
@@ -28,6 +30,6 @@ class CreateRevenuesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('revenues');
+        Schema::dropIfExists('labor_files');
     }
 }

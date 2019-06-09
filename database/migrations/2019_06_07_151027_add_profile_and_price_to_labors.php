@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddColumnsToLaborsTable extends Migration
+class AddProfileAndPriceToLabors extends Migration
 {
     /**
      * Run the migrations.
@@ -26,9 +26,9 @@ class AddColumnsToLaborsTable extends Migration
             $table->integer('height')->default(0);
             $table->integer('skin')->default(0);
             $table->integer('hair')->default(0);
-            $table->string("price_month");
-            $table->string("price_day");
-            $table->string("price_hour");
+            $table->string("price_month")->nullable();
+            $table->string("price_day")->nullable();
+            $table->string("price_hour")->nullable();
         });
     }
 
