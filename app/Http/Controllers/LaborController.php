@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Labor;
 use App\Job;
-use App\Carrier;
-use App\District;
-use App\Regency;
-use App\Province;
-use App\Http\Resources\Labor as LaborResource;
+use App\Labor;
 use App\Ethnic;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Input;
+use App\Carrier;
+use App\Regency;
+use App\District;
+use App\Province;
 use App\LaborFile;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use App\Http\Controllers\LaborSearch;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Resources\Labor as LaborResource;
 
 class LaborController extends Controller
 {
@@ -25,11 +26,9 @@ class LaborController extends Controller
      */
     public function index()
     {
-
-
         $labor = Labor::with(['carrier', 'job'])->paginate(5);
         // return $labor;
-        return LaborResource::collection($labor, JSON_UNESCAPED_SLASHES);
+        return LaborResource::collection($labor);
     }
 
     public function store(Request $request)
@@ -99,12 +98,7 @@ class LaborController extends Controller
     }
 
     public function search(Request $request){
-        // $origDate = strtotime($request->date);
-
-        // $newDate = intval(date('Y'));
-        // echo $newDate-1;
-        // return response()->json(['time' => $n], 200);
-
+       return LaborResource::collection(LaborSearch::filter($request));
     }
 
     // store labor files
