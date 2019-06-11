@@ -98,13 +98,18 @@ class LaborController extends Controller
         return $laborAge;
     }
 
-    public function search(Request $request){
-        // $origDate = strtotime($request->date);
+    public function search(Request $request, Labor $user){
 
-        // $newDate = intval(date('Y'));
-        // echo $newDate-1;
-        // return response()->json(['time' => $n], 200);
+        $user = (new Labor)->newQuery();
 
+
+        if($request->has('register_id')){
+            $user->where('register_id','like', "%$request->register_id%") ;
+
+        }
+
+        $result = $user->get();
+        return response()->json($result, 200);
     }
 
     // store labor files

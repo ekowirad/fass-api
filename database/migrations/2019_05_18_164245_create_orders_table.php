@@ -22,10 +22,11 @@ class CreateOrdersTable extends Migration
             $table->bigInteger('labor_id')->unsigned()->nullable();
             $table->foreign('labor_id')->references('id')->on('labors');
             $table->char('time_type', 3);
-            $table->string('day_start');
-            $table->string('day_end');
-            $table->string('hour_day');
-            $table->string('hour_start');
+            $table->string('day_start')->nullable()->default(null);
+            $table->string('day_end')->nullable()->default(null);
+            $table->string('hour_day')->nullable()->default(null);
+            $table->string('hour_start')->nullable()->default(null);
+            $table->int('status');
             // labor requirement if theres no labor available
             $table->bigInteger('labor_order_id')->unsigned();
             $table->foreign('labor_order_id')->references('id')->on('order_labors');
