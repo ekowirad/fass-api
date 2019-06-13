@@ -24,6 +24,8 @@ Route::post('carrier', 'LaborController@storeCarrier');
 Route::post('image', 'LaborController@storeImage');
 Route::delete('image', 'LaborController@destroyImage');
 
+Route::post('order', 'OrderController@store');
+
 
 
 Route::group(['middleware' => 'auth:api'], function () {

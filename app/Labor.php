@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Job;
+use App\Order;
 use App\Ethnic;
 use App\Carrier;
 use App\Regency;
@@ -43,6 +44,10 @@ class Labor extends Model
 
     public function ethnic(){
         return $this->belongsTo(Ethnic::class);
+    }
+
+    public function order(){
+        return $this->hasMany(Order::class);
     }
 
 

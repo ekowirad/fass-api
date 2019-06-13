@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateImagesTable extends Migration
+class AddDormColumnToLabors extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,8 @@ class CreateImagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('images', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->longText('filename');
-            $table->timestamps();
+        Schema::table('labors', function (Blueprint $table) {
+            $table->char('dorm_stay', 7)->nullable();
         });
     }
 
@@ -27,6 +25,8 @@ class CreateImagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('images');
+        Schema::table('labors', function (Blueprint $table) {
+            //
+        });
     }
 }

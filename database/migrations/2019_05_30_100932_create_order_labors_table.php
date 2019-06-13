@@ -16,13 +16,14 @@ class CreateOrderLaborsTable extends Migration
         Schema::create('order_labors', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('sex')->default(0);
-            $table->integer('age')->default(0);
             $table->integer('religion')->default(0);
             $table->integer('education')->default(0);
             $table->integer('marital_status')->default(0);
-            $table->char('speak_english', 7);
-            $table->char('dog_fear', 7);
-            $table->longText('skills')->nullable();
+            $table->char('speak_english', 7)->default(null);
+            $table->char('dog_fear', 7)->default(null);
+            $table->string('age')->default(null);
+            $table->longText('skills')->default(null);
+            $table->longText('price_month')->default(null);
             $table->bigInteger('job_id')->unsigned()->index();
             $table->foreign('job_id')->references('id')->on('jobs');
             $table->integer('ethnic_id')->unsigned();

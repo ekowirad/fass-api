@@ -18,7 +18,7 @@ class CreateAddonsCostsTable extends Migration
             $table->string('name');
             $table->bigInteger('cost');
             $table->bigInteger('order_id')->unsigned();
-            $table->foreign('id_order')->references('id')->on('orders');
+            $table->foreign('order_id')->references('id')->on('orders');
         });
     }
 

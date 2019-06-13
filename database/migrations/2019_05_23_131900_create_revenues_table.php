@@ -15,7 +15,8 @@ class CreateRevenuesTable extends Migration
     {
         Schema::create('revenues', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigIncrements('user_id')->unsigned();
+            // admin data
+            $table->bigInteger('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
