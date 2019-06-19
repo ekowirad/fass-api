@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Revenue;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -42,6 +43,9 @@ class User extends Authenticatable
         $this->save();
 
         return $this->api_token;
+    }
 
+    public function revenue(){
+        return $this->hasMany(Revenue::class);
     }
 }

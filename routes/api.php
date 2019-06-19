@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
 Route::post('login', 'LoginController@login');
 Route::post('logout', 'LoginController@logout');
 
@@ -19,12 +20,11 @@ Route::post('logout', 'LoginController@logout');
 Route::post('labor', 'LaborController@store');
 Route::post('search', 'LaborController@search');
 Route::put('labor', 'LaborController@store');
-Route::get('labors', 'LaborController@index');
+
 Route::post('carrier', 'LaborController@storeCarrier');
-Route::post('image', 'LaborController@storeImage');
-Route::delete('image', 'LaborController@destroyImage');
 
 Route::post('order', 'OrderController@store');
+Route::get('order/{id}', 'OrderController@show');
 
 
 
@@ -35,10 +35,16 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('user/{id}', 'UserController@show');
     Route::delete('user/{id}', 'UserController@destroy');
 
-    Route::post('prt', 'LaborController@store');
-    Route::put('prt', 'LaborController@store');
+    Route::post('labor', 'LaborController@store');
+    Route::put('labor', 'LaborController@store');
+    Route::get('labors/{id}', 'LaborController@indexPrt');
+    Route::get('labor/{id}', 'LaborController@show');
+    Route::delete('labor/{id}', 'LaborController@destroy');
 
-    Route::prefix('location')->group(function (){
+    Route::post('image', 'LaborController@storeImage');
+    Route::delete('image', 'LaborController@destroyImage');
+
+    Route::prefix('location')->group(function () {
         Route::get('provinces', 'LocationController@showProvinces');
         Route::get('regencies', 'LocationController@showRegencies');
         Route::get('districts', 'LocationController@showDistricts');

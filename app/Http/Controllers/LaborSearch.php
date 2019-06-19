@@ -37,6 +37,10 @@ class LaborSearch extends Controller
             $labor->where('marital_status', $request->marital_status);
         }
 
+        if ($request->has('status')) {
+            $labor->where('status', $request->status);
+        }
+
         if ($request->has('religion')) {
             $labor->where('religion', $request->religion);
         }
@@ -89,6 +93,6 @@ class LaborSearch extends Controller
             );
         }
 
-        return $labor->paginate(5);
+        return $labor->paginate(10);
     }
 }

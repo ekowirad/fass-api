@@ -16,4 +16,5 @@ class Ethnic extends Model
     public function labor(){
         return $this->hasMany(Labor::class);
     }
+
 }

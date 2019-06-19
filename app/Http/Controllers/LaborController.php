@@ -26,10 +26,17 @@ class LaborController extends Controller
      */
     public function index()
     {
-        $labor = Labor::with(['carrier', 'job', 'laborFile'])->paginate(6);
+        $labor = Labor::with(['carrier', 'job', 'laborFile'])->paginate(10);
         // return $labor;
         return LaborResource::collection($labor);
     }
+
+    public function indexPrt($id){
+        $labor = Labor::with(['carrier', 'job', 'laborFile'])->where('job_id',$id)->paginate(10);
+
+        return LaborResource::collection($labor);
+    }
+
 
     public function store(Request $request)
     {
@@ -74,6 +81,7 @@ class LaborController extends Controller
         $labor->price_day = $request->price_day;
         $labor->price_hour = $request->price_hour;
 
+
         $labor->job()->associate($job);
         $labor->district()->associate($district);
         $labor->regency()->associate($regency);
@@ -83,13 +91,17 @@ class LaborController extends Controller
 
         $labor->register_id = "{$job->code}{$labor->id}";
         $labor->save();
-        $this->storeCarrier($request['carriers'], $labor, $request);
+        if ($request->has('carriers')) {
+            $this->storeCarrier($request['carriers'], $labor, $request);
+        }
+
 
         return response()->json(['message' => 'success', 'data' => $labor]);
     }
 
     //checking labor age
-    private function ageLabor (String $date){
+    private function ageLabor(String $date)
+    {
         $yearNow = intval(date('Y'));
         $yearLabor = intval(date('Y', strtotime($date)));
 
@@ -97,8 +109,9 @@ class LaborController extends Controller
         return $laborAge;
     }
 
-    public function search(Request $request){
-       return LaborResource::collection(LaborSearch::filter($request));
+    public function search(Request $request)
+    {
+        return LaborResource::collection(LaborSearch::filter($request));
     }
 
     // store labor files
@@ -172,7 +185,8 @@ class LaborController extends Controller
      */
     public function show($id)
     {
-        //
+        $labor = Labor::with(['carrier', 'job', 'laborFile'])->findOrFail($id);
+        return new LaborResource($labor);
     }
 
     /**
