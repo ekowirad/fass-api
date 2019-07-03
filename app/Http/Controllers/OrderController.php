@@ -73,6 +73,7 @@ class OrderController extends Controller
             if ($key != 'age' && $key != 'skills' && $key != 'range_price') {
                 $orderLabor->$key = $value;
             } else {
+                // to store array data from age, skills, and range price
                 $orderLabor->$key = json_encode($value);
             }
         }

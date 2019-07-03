@@ -6,18 +6,23 @@ use Illuminate\Http\Request;
 use App\Province;
 use App\Regency;
 use App\District;
+use App\Ethnic;
 
-class LocationController extends Controller
+class DataLibraryController extends Controller
 {
     public function showProvinces(){
         return Province::all();
     }
 
     public function showRegencies(){
-        return Regencies::all();
+        return Regency::all();
     }
 
     public function showDistricts(){
-        return Districts::all();
+        return District::all();
+    }
+
+    public function showEthnics(){
+        return Ethnic::all();
     }
 }

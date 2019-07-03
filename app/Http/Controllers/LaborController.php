@@ -31,8 +31,9 @@ class LaborController extends Controller
         return LaborResource::collection($labor);
     }
 
-    public function indexPrt($id){
-        $labor = Labor::with(['carrier', 'job', 'laborFile'])->where('job_id',$id)->paginate(10);
+    public function indexPrt($id)
+    {
+        $labor = Labor::with(['carrier', 'job', 'laborFile'])->where('job_id', $id)->paginate(10);
 
         return LaborResource::collection($labor);
     }
@@ -64,6 +65,7 @@ class LaborController extends Controller
         $labor->status = $request->status;
         $labor->dog_fear = $request->dog_fear;
         $labor->speak_english = $request->speak_english;
+        $labor->address_now = $request->address_now;
 
         //labor additional data
         $labor->mother_name = $request->mother_name;
@@ -92,7 +94,7 @@ class LaborController extends Controller
         $labor->register_id = "{$job->code}{$labor->id}";
         $labor->save();
         if ($request->has('carriers')) {
-            $this->storeCarrier($request['carriers'], $labor, $request);
+            // $this->storeCarrier($labor, $request);
         }
 
 
@@ -117,6 +119,7 @@ class LaborController extends Controller
     // store labor files
     public function storeImage(Request $request)
     {
+        $valid = false;
         // upload profile picture
         if ($request->hasFile('profile_pic')) {
             $image = $request->file('profile_pic');
@@ -131,26 +134,32 @@ class LaborController extends Controller
             $laborFile->name = $request->labor_id . '_' . $type . '.' . $image->getClientOriginalExtension();
             $laborFile->labor()->associate($request->labor_id)->save();
             $image->storeAs('public/labor_upload', $laborFile->name);
-
-            return response()->json(['message' => 'success'], 200);
+            if ($laborFile->save()) {
+                $valid = true;
+            }
         }
 
         // upload labor requirement file, ex: ktp image, image 2x4, image 4x6, etc
         if ($request->hasFile('requirement_file')) {
-            foreach ($request->file('requirement_file') as $key => $file) {
-                $laborFile = new LaborFile;
+            foreach ($request->file('requirement_file') as $key => $req_file) {
+                $laborFiles = new LaborFile;
                 $type = 'requirement_file';
-                $laborFile->name = $request->labor_id . '_' . $type . '_' . $key . '.' . $image->getClientOriginalExtension();
-                $laborFile->type = $type;
-                $laborFile->labor()->associate($request->labor_id)->save();
-                $file->storeAs('public/labor_upload', $laborFile->name);
-
-                return response()->json(['message' => 'success'], 200);
+                $laborFiles->name = $request->labor_id . '_' . $type . '_' . $key . '.' . $req_file->getClientOriginalExtension();
+                $laborFiles->type = $type;
+                $laborFiles->labor()->associate($request->labor_id)->save();
+                $req_file->storeAs('public/labor_upload', $laborFiles->name);
+                if ($laborFiles->save()) {
+                    $valid = true;
+                }
             }
         }
 
         // return this if theres no files given
-        return response()->json(['message' => 'no files given'], 200);
+        if ($valid) {
+            return response()->json(['message' => 'upload success'], 200);
+        } else {
+            return response()->json(['message' => 'no files given'], 200);
+        }
     }
 
     public function destroyImage(Request $request)
@@ -164,25 +173,57 @@ class LaborController extends Controller
 
 
     // store labor carriers
-    public function storeCarrier(array $carriers, Labor $labor, Request $request)
+    public function storeCarrier(Request $request)
     {
-        $carrier;
-        foreach ($carriers as $key => $data) {
+        foreach ($request->carriers as $key => $data) {
             $carrier = $request->isMethod('put') ? Carrier::findOrFail($data["id"]) : new Carrier;
             $carrier->name = $data["name"];
             $carrier->start = $data["start"];
             $carrier->end = $data["end"];
-            $labor->carrier()->save($carrier);
-            $carrier->labor()->associate($labor->id)->save();
+            $carrier->labor()->associate($request->labor_id)->save();
+            $carrier->save();
+
+            // return new carrier
+            $newCarriers = array();
+            array_push($newCarriers, $carrier);
+        }
+
+        // delete carrier
+        if ($request->isMethod('put')) {
+            //do delete carrier when update only and req carrier size and db carrier size not equals
+            $carriers = Carrier::where('labor_id', $request->labor_id)->get();
+            if (sizeof($carriers) != sizeof($request->carriers)) {
+                return  $this->deleteCarrier($request, $carriers);
+            } else {
+                return $carriers;
+            }
+        } else {
+            return $newCarriers;
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    public function deleteCarrier(Request $request, Carrier $carriers)
+    {
+        $carrierIdDB = array();
+        $carrierIdReq = array();
+        foreach ($carriers as $key => $value) {
+            array_push($carrierIdDB, $value["id"]);
+        }
+        foreach ($request->carriers as $key => $value) {
+            array_push($carrierIdReq, $value["id"]);
+        }
+
+        $ress = array_diff($carrierIdDB, $carrierIdReq);
+        if (sizeof($ress) != 0) {
+            foreach ($ress as $key => $value) {
+                $carrier = Carrier::findOrFail($value);
+                $carrier->delete();
+            }
+            $changeCarriers = Carrier::where('labor_id', $request->labor_id)->get();
+            return $changeCarriers;
+        }
+    }
+
     public function show($id)
     {
         $labor = Labor::with(['carrier', 'job', 'laborFile'])->findOrFail($id);
