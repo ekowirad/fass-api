@@ -79,6 +79,7 @@ class LaborController extends Controller
         $labor->weight = $request->weight;
         $labor->height = $request->height;
         $labor->hair = $request->hair;
+        $labor->skin = $request->skin;
         $labor->price_month = $request->price_month;
         $labor->price_day = $request->price_day;
         $labor->price_hour = $request->price_hour;
