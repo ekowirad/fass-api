@@ -25,10 +25,10 @@ class OrderLabor extends JsonResource
             'dog_fear' => $this->dog_fear,
             'age' => json_decode($this->age),
             'skills' => json_decode($this->skills),
-            'ethnic' => $this->ethnic,
-            'job' => $this->job,
+            'ethnic_id' => $this->ethnic_id,
+            'job_id' => $this->job_id,
             'time_type' => $this->time_type,
-            'range_price' => json_decode($this->range_price),
+            'price' => json_decode($this->price),
         ];
     }
 }

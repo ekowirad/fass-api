@@ -17,6 +17,8 @@ class CreateExpensesTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->bigInteger('nominal');
+            $table->bigInteger('revenue_id')->unsigned();
+            $table->foreign('revenue_id')->references('id')->on('revenues');
             $table->timestamps();
         });
     }

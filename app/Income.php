@@ -7,8 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Income extends Model
 {
+    protected $fillable = [
+        'name', 'nominal', 'revenue_id'
+    ];
 
     public function revenue(){
-        $this->belongsTo(Revenue::class);
+      return  $this->belongsTo(Revenue::class);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Labor;
 use Illuminate\Http\Request;
+use Mockery\Undefined;
 
 class LaborSearch extends Controller
 {
@@ -13,17 +14,18 @@ class LaborSearch extends Controller
 
         // personal filter
         if ($request->has('searchbox')) {
-            $labor->where('name', 'like', "%$request->name%")
-                ->orWhere('register_id', 'like', "%$request->register_id%");
+            $labor->where('name', 'like', "%$request->searchbox%")
+                ->orWhere('register_id', 'like', "%$request->searchbox%");
         }
 
-        if ($request->has('ethnic')) {
-            $labor->whereHas(
-                'ethnic',
-                function ($query) use ($request) {
-                    $query->where('name', $request->ethnic);
-                }
-            );
+        if ($request->has('ethnic_id')) {
+            $labor->where('ethnic_id', $request->ethnic_id);
+            // $labor->whereHas(
+            //     'ethnic',
+            //     function ($query) use ($request) {
+            //         $query->where('name', $request->ethnic);
+            //     }
+            // );
         }
 
         if ($request->has('sex')) {
@@ -46,20 +48,46 @@ class LaborSearch extends Controller
         }
 
         if ($request->has('age')) {
-            $labor->where('age', '>=', $request->age['min'])->where('age', '<=', $request->age['max']);
+            if ($request->age != null) {
+                // $min = $labor->age['min'] == null? 0 : $labor->age['min'];
+                // $max = $labor->age['max'] == null? 0 : $labor->age['max'];
+                $labor->where('age', '>=', $request->age[0])->where('age', '<=', $request->age[1]);
+            }
         }
 
         // Job filter
-        if ($request->has('job')) {
-            $labor->whereHas(
-                'job',
-                function ($query) use ($request) {
-                    $query->where('name', $request->job);
-                }
-            );
+        if ($request->has('job_id')) {
+            $labor->where('job_id', $request->job_id);
+            // $labor->whereHas(
+            //     'job',
+            //     function ($query) use ($request) {
+            //         $query->where('name', $request->job);
+            //     }
+            // );
         }
-        if ($request->has('price_month')) {
-            $labor->where('price_month', '>=', $request->price_month['min'])->where('price_month', '<=', $request->price_month['max']);
+
+        if ($request->has('dog_fear')) {
+            $dog_fear = $request->dog_fear == true ? 1 : 0;
+            if ($dog_fear != 0) {
+                $labor->where('dog_fear', $dog_fear);
+            }
+        }
+        if ($request->has('speak_english')) {
+            $speak_english = $request->speak_english == true ? 1 : 0;
+            if ($speak_english != 0) {
+                $labor->where('speak_english', $speak_english);
+            }
+        }
+
+        if ($request->has('price')) {
+            if ($request->price != null) {
+                if ($request->price['min'] != 0) {
+                    $labor->where($request->price['type'], '>=', $request->price['min']);
+                }
+                if ($request->price['max'] != 0) {
+                    $labor->where($request->price['type'], '<=', $request->price['max']);
+                }
+            }
         }
 
         if ($request->has('skills')) {
@@ -93,6 +121,6 @@ class LaborSearch extends Controller
             );
         }
 
-        return $labor->paginate(10);
+        return $labor->paginate(8);
     }
 }

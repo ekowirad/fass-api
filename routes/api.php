@@ -15,16 +15,21 @@ use Illuminate\Http\Request;
 
 Route::post('login', 'LoginController@login');
 Route::post('logout', 'LoginController@logout');
+Route::post('search', 'LaborController@search');
+Route::get('mitras', 'LaborController@index');
+Route::get('mitra/{id}', 'LaborController@show');
+Route::prefix('data_lib')->group(function () {
+    Route::get('provinces', 'DataLibraryController@showProvinces');
+    Route::get('regencies', 'DataLibraryController@showRegencies');
+    Route::get('districts', 'DataLibraryController@showDistricts');
+    Route::get('ethnics', 'DataLibraryController@showEthnics');
+    Route::get('statuses', 'DataLibraryController@showStatuses');
+    Route::get('jobs', 'DataLibraryController@showJobs');
+});
+Route::post('order', 'OrderController@store');
 
 // Testing route
-Route::post('labor', 'LaborController@store');
-Route::post('search', 'LaborController@search');
-Route::put('labor', 'LaborController@store');
 
-// Route::post('carrier', 'LaborController@storeCarrier');
-
-Route::post('order', 'OrderController@store');
-Route::get('order/{id}', 'OrderController@show');
 
 
 
@@ -45,12 +50,12 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::put('carrier', 'LaborController@storeCarrier');
 
     Route::post('files', 'LaborController@storeImage');
-    Route::delete('files', 'LaborController@destroyImage');
+    Route::delete('files/{file_id}', 'LaborController@destroyImage');
 
-    Route::prefix('data_lib')->group(function () {
-        Route::get('provinces', 'DataLibraryController@showProvinces');
-        Route::get('regencies', 'DataLibraryController@showRegencies');
-        Route::get('districts', 'DataLibraryController@showDistricts');
-        Route::get('ethnics', 'DataLibraryController@showEthnics');
-    });
+    Route::get('orders', 'OrderController@index');
+    Route::put('order', 'OrderController@store');
+    Route::get('order/{id}', 'OrderController@show');
+
+    Route::post('expense_income', 'RevenueController@storeExpenseIncome');
+    Route::get('expense_income/{type}', 'RevenueController@showExpenseIncome');
 });

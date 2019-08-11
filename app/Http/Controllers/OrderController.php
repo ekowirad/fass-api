@@ -23,33 +23,29 @@ class OrderController extends Controller
         // daily order
         $order->day_start = $request->day_start;
         $order->day_end = $request->day_end;
-        $order->day_cost = $request->day_cost;
+
         // hours order
         $order->hour_date = $request->hour_date;
         $order->hour_start = $request->hour_start;
         $order->hour_end = $request->hour_end;
-        $order->hour_cost = $request->hour_cost;
-
-        // status order
-        // 0 : progress
-        // 1 : success
-        $order->status = $request->status;
 
         //sales data
+        if ($request->has('addons_cost')) {
+            $order->addons_cost = json_encode($request->addons_cost);
+        }
         $order->salary_cut = $request->salary_cut;
         $order->admin_cost = $request->admin_cost;
         $order->total_cost = $request->total_cost;
         if ($request->has('revenue_id')) {
             $order->revenue()->associate($request->revenue_id);
         }
+        $order->status()->associate($request->status_id)->save();
+        $order->note_id = time() . '-' . $order->id . '-' . $request->time_type;
         $order->save();
 
         // labor available
         if ($request->has('labor_id')) {
             $order->labor()->associate($request->labor_id);
-            $order->note_id = time() . '-' . $order->id . '-' . $request->labor_id;
-        } else {
-            $order->note_id = time() . '-' . $order->id;
         }
         $order->save();
 
@@ -58,9 +54,9 @@ class OrderController extends Controller
             $this->storeRequirementLabor($request, $order->id);
         }
         // addons cost
-        if ($request->has('addons_costs')) {
-            $this->storeAddonsCost($request, $order->id);
-        }
+        // if ($request->has('addons_costs')) {
+        //     $this->storeAddonsCost($request, $order->id);
+        // }
 
         return response()->json(['message' => 'success', 'data' => $order]);
     }
@@ -70,7 +66,7 @@ class OrderController extends Controller
     {
         $orderLabor = new OrderLabor;
         foreach ($req->order_labor as $key => $value) {
-            if ($key != 'age' && $key != 'skills' && $key != 'range_price') {
+            if ($key != 'age' && $key != 'skills' && $key != 'price') {
                 $orderLabor->$key = $value;
             } else {
                 // to store array data from age, skills, and range price
@@ -92,23 +88,24 @@ class OrderController extends Controller
         }
     }
 
-    public function index(){
-        $order = Order::with(['order_labor', 'labor', 'addons_cost'])->paginate(10);
-        return new AppOrder($order);
+    public function index()
+    {
+        $order = Order::with(['order_labor', 'labor'])->where('status_id', 1)->orderBy('created_at', 'desc')->get();
+        return AppOrder::collection($order);
     }
 
-    public function show($id){
-        $order = Order::with(['order_labor', 'labor', 'addons_cost'])->findOrFail($id);
+    public function show($id)
+    {
+        $order = Order::with(['order_labor', 'labor'])->findOrFail($id);
         return new AppOrder($order);
-
     }
 
 
     public function destroy($id)
     {
         $order = Order::findOrFail($id);
-        if($order->delete()){
-            return response()->json(['message'=>'success']);
+        if ($order->delete()) {
+            return response()->json(['message' => 'success']);
         }
-     }
+    }
 }

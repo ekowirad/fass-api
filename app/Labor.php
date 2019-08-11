@@ -5,6 +5,7 @@ namespace App;
 use App\Job;
 use App\Order;
 use App\Ethnic;
+use App\Status;
 use App\Carrier;
 use App\Regency;
 use App\District;
@@ -48,6 +49,10 @@ class Labor extends Model
 
     public function order(){
         return $this->hasMany(Order::class);
+    }
+
+    public function status(){
+        return $this->belongsTo(Status::class);
     }
 
 

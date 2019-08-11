@@ -24,6 +24,7 @@ class Order extends JsonResource
         return [
             'id' => $this->id,
             'note_id' => $this->note_id,
+            'status_id' => $this->status_id,
             'name' => $this->name,
             'handphone' => $this->handphone,
             'address' => $this->address,
@@ -31,20 +32,18 @@ class Order extends JsonResource
 
             'day_start' => $this->day_start,
             'day_end' => $this->day_end,
-            'day_cost' => $this->day_cost,
 
             'hour_date' => $this->hour_date,
             'hour_start' => $this->hour_start,
             'hour_end' => $this->hour_end,
-            'hour_cost' => $this->hour_cost,
 
             'revenue_id' => $this->revenue_id,
+            'addons_cost' => json_decode($this->addons_cost),
             'admin_cost' => $this->admin_cost,
             'salary_cut' => $this->salary_cut,
             'total_cost' => $this->total_cost,
-            'addons_costs' => OrderAddonsResource::collection($this->addons_cost),
 
-            'labor ' => new LaborLiteResource($this->labor),
+            'labor' => new LaborLiteResource($this->labor),
             'order_labor' => new OrderLaborResource($this->order_labor),
 
             'created_at' => $this->created_at,

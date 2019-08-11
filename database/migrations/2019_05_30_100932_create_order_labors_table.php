@@ -19,8 +19,8 @@ class CreateOrderLaborsTable extends Migration
             $table->integer('religion')->default(0)->nullable();
             $table->integer('education')->default(0)->nullable();
             $table->integer('marital_status')->default(0)->nullable();
-            $table->char('speak_english', 7)->default(null)->nullable();
-            $table->char('dog_fear', 7)->default(null)->nullable();
+            $table->char('speak_english', 7)->default(0)->nullable();
+            $table->char('dog_fear', 7)->default(0)->nullable();
             $table->string('age')->default(null)->nullable();
             $table->longText('skills')->default(null)->nullable();
             $table->string('ethnic')->default(null)->nullable();

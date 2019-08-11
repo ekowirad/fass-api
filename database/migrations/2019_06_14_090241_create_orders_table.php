@@ -17,7 +17,8 @@ class CreateOrdersTable extends Migration
            //order columns
            $table->bigIncrements('id');
            $table->string('note_id')->nullable()->default(null);
-           $table->integer('status'); // order status
+           $table->integer('status_id')->unsigned()->nullable();
+           $table->foreign('status_id')->references('id')->on('statuses');
            $table->string('name');
            $table->bigInteger('handphone');
            $table->string('address');
@@ -47,6 +48,7 @@ class CreateOrdersTable extends Migration
            $table->bigInteger('total_cost')->default(0)->nullable();
            $table->timestamps();
         });
+        DB::statement("ALTER TABLE orders AUTO_INCREMENT = 1001;");
     }
 
     /**

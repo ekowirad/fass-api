@@ -10,7 +10,7 @@ class OrderLabor extends Model
 
     public $timestamps = false;
     protected $fillable = [
-        'sex', 'religion', 'education', 'marital_status', 'speak_english', 'dog_fear', 'age', 'skills', 'time_type', 'range_price', 'job_id', 'ethnic_id', 'order_id'
+        'sex', 'religion', 'education', 'marital_status', 'speak_english', 'dog_fear', 'age', 'skills', 'time_type', 'price', 'job_id', 'ethnic_id', 'order_id'
     ];
 
       public function order(){

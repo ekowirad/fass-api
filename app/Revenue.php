@@ -5,6 +5,7 @@ namespace App;
 use App\User;
 use App\Order;
 use App\Income;
+use App\Expense;
 use Illuminate\Database\Eloquent\Model;
 
 class Revenue extends Model
@@ -19,6 +20,10 @@ class Revenue extends Model
 
     public function income(){
        return $this->hasMany(Income::class);
+
+    }
+    public function expense(){
+       return $this->hasMany(Expense::class);
 
     }
 

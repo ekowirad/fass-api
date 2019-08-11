@@ -16,6 +16,7 @@ class Carrier extends JsonResource
     {
         // return parent::toArray($request);
         return [
+            'id' => $this->id,
             'name' => $this->name,
             'start' => $this->start,
             'end' => $this->end
