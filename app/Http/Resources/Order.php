@@ -3,8 +3,7 @@
 namespace App\Http\Resources;
 
 use App\OrderLabor;
-use App\Http\Resources\LaborLite as LaborLiteResource;
-use App\Http\Resources\OrderAddons as OrderAddonsResource;
+use App\Http\Resources\Labor as LaborResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\OrderLabor as OrderLaborResource;
 
@@ -43,7 +42,7 @@ class Order extends JsonResource
             'salary_cut' => $this->salary_cut,
             'total_cost' => $this->total_cost,
 
-            'labor' => new LaborLiteResource($this->labor),
+            'labor' => new LaborResource($this->labor),
             'order_labor' => new OrderLaborResource($this->order_labor),
 
             'created_at' => $this->created_at,

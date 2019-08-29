@@ -3,10 +3,11 @@
 namespace App\Http\Resources;
 
 use App\Carrier;
+use App\LaborFile;
+use App\Http\Resources\LaborWorkHistory as WorkHistoryResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Carrier as CarrierRescource;
 use App\Http\Resources\LaborFile as LaborFileRescource;
-use App\LaborFile;
 
 class Labor extends JsonResource
 {
@@ -59,6 +60,7 @@ class Labor extends JsonResource
             'price_month' => $this->price_month,
             'price_day' => $this->price_day,
             'price_hour' => $this->price_hour,
+            'work_history' => WorkHistoryResource::collection($this->order),
             'carriers' => CarrierRescource::collection($this->carrier),
             'profile_pic' => new LaborFileRescource($this->profilPic($this->laborFile)),
             'requirement_file' => LaborFileRescource::collection($this->laborFile($this->laborFile)),

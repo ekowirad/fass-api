@@ -31,7 +31,9 @@ class OrderController extends Controller
 
         //sales data
         if ($request->has('addons_cost')) {
-            $order->addons_cost = json_encode($request->addons_cost);
+            if ($request->addons_cost != null) {
+                $order->addons_cost = json_encode($request->addons_cost);
+            }
         }
         $order->salary_cut = $request->salary_cut;
         $order->admin_cost = $request->admin_cost;
@@ -51,7 +53,9 @@ class OrderController extends Controller
 
         // labor requirement if theres no labor available
         if ($request->has('order_labor')) {
-            $this->storeRequirementLabor($request, $order->id);
+            if ($request->order_labor != null) {
+                $this->storeRequirementLabor($request, $order->id);
+            }
         }
         // addons cost
         // if ($request->has('addons_costs')) {
@@ -64,13 +68,15 @@ class OrderController extends Controller
     // store require labor
     private function storeRequirementLabor(Request $req, $order_id)
     {
-        $orderLabor = new OrderLabor;
+        $orderLabor = $req->isMethod('put') ? OrderLabor::findOrFail($req->order_labor['id'])  : new OrderLabor;
         foreach ($req->order_labor as $key => $value) {
             if ($key != 'age' && $key != 'skills' && $key != 'price') {
                 $orderLabor->$key = $value;
             } else {
                 // to store array data from age, skills, and range price
-                $orderLabor->$key = json_encode($value);
+                if ($value != null) {
+                    $orderLabor->$key = json_encode($value);
+                }
             }
         }
         $orderLabor->order()->associate($order_id);
@@ -90,7 +96,7 @@ class OrderController extends Controller
 
     public function index()
     {
-        $order = Order::with(['order_labor', 'labor'])->where('status_id', 1)->orderBy('created_at', 'desc')->get();
+        $order = Order::with(['order_labor', 'labor'])->where('status_id', 1)->orderBy('created_at', 'desc')->paginate(8);
         return AppOrder::collection($order);
     }
 

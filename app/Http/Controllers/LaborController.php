@@ -26,23 +26,31 @@ class LaborController extends Controller
      */
     public function index()
     {
-        $labor = Labor::with(['carrier', 'job', 'laborFile'])->where('status', 1)->paginate(8);
-        // return $labor;
-        return LaborResource::collection($labor);
+        $type = Input::get('type');
+        $allLabor = Labor::with(['carrier', 'job', 'laborFile'])->orderBy('created_at', 'desc')->paginate(8);
+
+        if ($type == 'available') {
+            $labor = Labor::with(['carrier', 'job', 'laborFile'])->where('status', 4)->orderBy('created_at', 'desc')->paginate(8);
+            return LaborResource::collection($labor);
+        } else {
+            return LaborResource::collection($allLabor);
+        }
     }
 
     public function indexPrt($id)
     {
         $type = Input::get('type');
-        $labor = Labor::with(['carrier', 'job', 'laborFile'])->where('job_id', $id)->paginate(8);
+        $labor = Labor::with(['carrier', 'job', 'laborFile',
+        'order' => function($query){
+            $query->where('status_id', 2)->orderBy('updated_at', 'desc');
+        }])->where('job_id', $id)->orderBy('created_at', 'desc')->paginate(8);
 
-        if($type == 'size'){
-            $size = sizeof(Labor::where('job_id', $id)->get());
+        if ($type == 'size') {
+            $size = Labor::where('job_id', $id)->count();
             return response()->json(['size' => $size], 200);
-        }else{
-        return LaborResource::collection($labor);
+        } else {
+            return LaborResource::collection($labor);
         }
-
     }
 
 

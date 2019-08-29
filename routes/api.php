@@ -55,7 +55,10 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('orders', 'OrderController@index');
     Route::put('order', 'OrderController@store');
     Route::get('order/{id}', 'OrderController@show');
+    Route::delete('order/{id}', 'OrderController@destroy');
 
+    Route::post('revenue', 'RevenueController@store');
+    Route::get('revenues', 'RevenueController@index');
     Route::post('expense_income', 'RevenueController@storeExpenseIncome');
     Route::get('expense_income/{type}', 'RevenueController@showExpenseIncome');
 });

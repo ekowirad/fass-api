@@ -3,6 +3,7 @@
 namespace App;
 
 use App\User;
+use App\Labor;
 use App\Order;
 use App\Income;
 use App\Expense;

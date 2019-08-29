@@ -14,8 +14,12 @@ class LaborSearch extends Controller
 
         // personal filter
         if ($request->has('searchbox')) {
-            $labor->where('name', 'like', "%$request->searchbox%")
-                ->orWhere('register_id', 'like', "%$request->searchbox%");
+            if ($request->searchbox != "") {
+                $labor->where(function ($query) use ($request) {
+                    $query->where('name', 'like', "%$request->searchbox%")
+                        ->orWhere('register_id', 'like', "%$request->searchbox%");
+                });
+            }
         }
 
         if ($request->has('ethnic_id')) {
@@ -104,21 +108,23 @@ class LaborSearch extends Controller
                 }
             );
         }
-        if ($request->has('regency')) {
-            $labor->whereHas(
-                'regency',
-                function ($query) use ($request) {
-                    $query->where('name', $request->regency);
-                }
-            );
+        if ($request->has('regency_id')) {
+            $labor->where('regency_id', $request->regency_id);
+            // $labor->whereHas(
+            //     'regency',
+            //     function ($query) use ($request) {
+            //         $query->where('name', $request->regency);
+            //     }
+            // );
         }
-        if ($request->has('province')) {
-            $labor->whereHas(
-                'province',
-                function ($query) use ($request) {
-                    $query->where('name', $request->province);
-                }
-            );
+        if ($request->has('province_id')) {
+            $labor->where('province_id', $request->province_id);
+            // $labor->whereHas(
+            //     'province',
+            //     function ($query) use ($request) {
+            //         $query->where('name', $request->province);
+            //     }
+            // );
         }
 
         return $labor->paginate(8);
