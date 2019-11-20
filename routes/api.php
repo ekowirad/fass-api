@@ -27,6 +27,7 @@ Route::prefix('data_lib')->group(function () {
     Route::get('jobs', 'DataLibraryController@showJobs');
 });
 Route::post('order', 'OrderController@store');
+Route::post('order_payment', 'OrderPaymentController@store');
 
 // Testing route
 
@@ -56,6 +57,9 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::put('order', 'OrderController@store');
     Route::get('order/{id}', 'OrderController@show');
     Route::delete('order/{id}', 'OrderController@destroy');
+
+    Route::get('order_payments', 'OrderPaymentController@index');
+    Route::get('order_payment/{id}', 'OrderPaymentController@show');
 
     Route::post('revenue', 'RevenueController@store');
     Route::get('revenues', 'RevenueController@index');

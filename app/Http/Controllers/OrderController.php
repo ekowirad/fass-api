@@ -102,7 +102,9 @@ class OrderController extends Controller
 
     public function show($id)
     {
-        $order = Order::with(['order_labor', 'labor'])->findOrFail($id);
+        $order = Order::with(['order_labor', 'labor.order' => function($query){
+            $query->where('status_id', 2)->orderBy('updated_at', 'desc');
+        }])->findOrFail($id);
         return new AppOrder($order);
     }
 

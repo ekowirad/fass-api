@@ -27,7 +27,7 @@ class LaborController extends Controller
     public function index()
     {
         $type = Input::get('type');
-        $allLabor = Labor::with(['carrier', 'job', 'laborFile'])->orderBy('created_at', 'desc')->paginate(8);
+        $allLabor = Labor::with(['carrier', 'job', 'laborFile'])->where('status', '!=', 6)->orderBy('created_at', 'desc')->paginate(8);
 
         if ($type == 'available') {
             $labor = Labor::with(['carrier', 'job', 'laborFile'])->where('status', 4)->orderBy('created_at', 'desc')->paginate(8);
