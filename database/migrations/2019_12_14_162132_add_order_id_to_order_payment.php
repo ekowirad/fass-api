@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateOrderPaymentsTable extends Migration
+class AddOrderIdToOrderPayment extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,9 @@ class CreateOrderPaymentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('order_payments', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('note_id');
-            $table->string('name');
-            $table->bigInteger('handphone');
-            $table->string('address');
-            $table->string('file');
+        Schema::table('order_payments', function (Blueprint $table) {
             $table->bigInteger('order_id')->unsigned();
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
-            $table->timestamps();
         });
     }
 
@@ -33,6 +26,8 @@ class CreateOrderPaymentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('order_payments');
+        Schema::table('order_payments', function (Blueprint $table) {
+            //
+        });
     }
 }

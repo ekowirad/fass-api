@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\OrderPayment;
 use Illuminate\Http\Request;
 use App\Http\Resources\OrderPayment as OrderPaymentResource;
+use App\Order;
+use Exception;
+use Illuminate\Support\Facades\Mail;
 
 class OrderPaymentController extends Controller
 {
@@ -16,16 +19,38 @@ class OrderPaymentController extends Controller
 
     public function store(Request $request)
     {
-        $payment = new OrderPayment;
+        //Checking note_id exist in orders table
+        //Checking if note_id has exist in order_payments table, avoid spams
+        if (
+            Order::where([['note_id', '=', $request->note_id], ['status_id', '=', $request->status_id]])->first()
+            && !OrderPayment::where('note_id', $request->note_id)->first()
+        ) {
+            // search order based on note_id
+            $order = Order::where('note_id', $request->note_id)->firstOrFail();
+            $payment = new OrderPayment;
 
-        $payment->name = $request->name;
-        $payment->note_id = $request->note_id;
-        $payment->handphone = $request->handphone;
-        $payment->address = $request->address;
-        $payment->file = $this->storeImage($request);
+            // store order payment
+            $payment->name = $request->name;
+            $payment->note_id = $request->note_id;
+            $payment->handphone = $request->handphone;
+            $payment->address = $request->address;
+            $payment->order()->associate($order->id);
+            $payment->file = $this->storeImage($request);
 
-        if ($payment->save()) {
-            return response()->json(['message' => 'success', 'data' => $payment]);
+            if ($payment->save()) {
+                try {
+                    Mail::send('payment_mail', ['order' => $order], function ($msg) {
+                        $msg->subject('Konfirmasi Pembayaran');
+                        $msg->from('kasihkeluargayayasan@gmail.com', 'Sistem Yayasan Kasih Keluarga');
+                        $msg->to('ekowiradharma@gmail.com');
+                    });
+                    return response()->json(['message' => 'success', 'data' => $payment]);
+                } catch (Exception $e) {
+                    return response(['status' => false, 'errors' => $e->getMessage()]);
+                }
+            }
+        } else {
+            return response()->json(['message' => 'Nomor nota tidak ditemukan atau sudah dikonfirmasi'], 401);
         }
     }
 

@@ -7,6 +7,7 @@ use App\Status;
 use App\Revenue;
 use App\AddonsCost;
 use App\OrderLabor;
+use App\OrderPayment;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
@@ -33,6 +34,11 @@ class Order extends Model
     public function order_labor()
     {
         return $this->hasOne(OrderLabor::class);
+    }
+
+    public function order_payment()
+    {
+        return $this->hasOne(OrderPayment::class);
     }
 
     public function status(){
